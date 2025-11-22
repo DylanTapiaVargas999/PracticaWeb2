@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Firestore - Diagnóstico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnóstico de Firestore</h1>
+    
+    <div class="test-box">
+        <h2>Estado de Firebase</h2>
+        <button onclick="testFirebaseConnection()">1. Probar Conexión Firebase</button>
+        <button onclick="testAuthentication()">2. Verificar Autenticación</button>
+        <button onclick="testFirestoreRead()">3. Probar Lectura Firestore</button>
+        <button onclick="testFirestoreWrite()">4. Probar Escritura Firestore</button>
+        <button onclick="clearOutput()">Limpiar Consola</button>
+        <div id="output" class="output">Presiona un botón para comenzar las pruebas...</div>
+    </div>
+
+    <div class="test-box">
+        <h2>Registro de Prueba</h2>
+        <form id="testRegisterForm">
+            <div style="margin: 10px 0;">
+                <label>Código:</label>
+                <input type="text" id="testCodigo" value="TEST2025001" required style="width: 100%; padding: 8px;">
+            </div>
+            <div style="margin: 10px 0;">
+                <label>Nombre:</label>
+                <input type="text" id="testNombre" value="Usuario de Prueba" required style="width: 100%; padding: 8px;">
+            </div>
+            <div style="margin: 10px 0;">
+                <label>Email:</label>
+                <input type="email" id="testEmail" value="test@prueba.com" required style="width: 100%; padding: 8px;">
+            </div>
+            <div style="margin: 10px 0;">
+                <label>Contraseña:</label>
+                <input type="password" id="testPassword" value="test123456" required style="width: 100%; padding: 8px;">
+            </div>
+            <button type="submit">Registrar Usuario de Prueba</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDmyY3n9s1Wcyx0-0G3MCXc0zfRd47ge8",
+            authDomain: "tareaweb2-59553.firebaseapp.com",
+            projectId: "tareaweb2-59553",
+            storageBucket: "tareaweb2-59553.firebasestorage.app",
+            messagingSenderId: "353313714839",
+            appId: "1:353313714839:web:685bfa9931e3096364efd2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const output = document.getElementById('output');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+
+        window.clearOutput = function() {
+            output.innerHTML = '';
+        };
+
+        window.testFirebaseConnection = function() {
+            log('=== TEST 1: CONEXIÓN FIREBASE ===', 'info');
+            try {
+                log('✅ Firebase App Name: ' + app.name, 'success');
+                log('✅ Project ID: ' + app.options.projectId, 'success');
+                log('✅ Auth Domain: ' + app.options.authDomain, 'success');
+                log('✅ Firebase inicializado correctamente', 'success');
+            } catch (error) {
+                log('❌ Error: ' + error.message, 'error');
+            }
+        };
+
+        window.testAuthentication = function() {
+            log('=== TEST 2: AUTENTICACIÓN ===', 'info');
+            const user = auth.currentUser;
+            if (user) {
+                log('✅ Usuario autenticado:', 'success');
+                log('  - UID: ' + user.uid, 'info');
+                log('  - Email: ' + user.email, 'info');
+            } else {
+                log('⚠️ No hay usuario autenticado', 'error');
+                log('  Necesitas registrar/iniciar sesión primero', 'info');
+            }
+        };
+
+        window.testFirestoreRead = async function() {
+            log('=== TEST 3: LECTURA FIRESTORE ===', 'info');
+            try {
+                log('Intentando leer colección "alumnos"...', 'info');
+                const querySnapshot = await getDocs(collection(db, 'alumnos'));
+                log('✅ Lectura exitosa', 'success');
+                log('Total de documentos: ' + querySnapshot.size, 'info');
+                
+                if (querySnapshot.empty) {
+                    log('⚠️ La colección está vacía (no hay usuarios registrados)', 'info');
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        log('Documento ID: ' + doc.id, 'info');
+                        log('  Datos: ' + JSON.stringify(doc.data(), null, 2), 'info');
+                    });
+                }
+            } catch (error) {
+                log('❌ Error al leer: ' + error.code + ' - ' + error.message, 'error');
+                if (error.code === 'permission-denied') {
+                    log('  Las reglas de Firestore no permiten la lectura', 'error');
+                }
+            }
+        };
+
+        window.testFirestoreWrite = async function() {
+            log('=== TEST 4: ESCRITURA FIRESTORE ===', 'info');
+            const user = auth.currentUser;
+            
+            if (!user) {
+                log('❌ No hay usuario autenticado', 'error');
+                log('  Primero registra un usuario de prueba', 'info');
+                return;
+            }
+
+            try {
+                log('Usuario actual: ' + user.uid, 'info');
+                log('Intentando escribir en colección "alumnos"...', 'info');
+                
+                const testData = {
+                    codigo: 'TEST123',
+                    nombre: 'Usuario de Prueba',
+                    email: user.email,
+                    rol: 'alumno',
+                    fechaRegistro: new Date().toISOString(),
+                    timestamp: Date.now()
+                };
+                
+                log('Datos a escribir: ' + JSON.stringify(testData, null, 2), 'info');
+                
+                const docRef = doc(db, 'alumnos', user.uid);
+                await setDoc(docRef, testData);
+                
+                log('✅ Escritura exitosa', 'success');
+                
+                // Verificar
+                const savedDoc = await getDoc(docRef);
+                if (savedDoc.exists()) {
+                    log('✅ Verificación: Documento guardado correctamente', 'success');
+                    log('  Datos guardados: ' + JSON.stringify(savedDoc.data(), null, 2), 'info');
+                }
+                
+            } catch (error) {
+                log('❌ Error al escribir: ' + error.code + ' - ' + error.message, 'error');
+                if (error.code === 'permission-denied') {
+                    log('  Las reglas de Firestore no permiten la escritura', 'error');
+                }
+            }
+        };
+
+        // Form handler
+        document.getElementById('testRegisterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            log('=== REGISTRO DE USUARIO DE PRUEBA ===', 'info');
+            
+            const codigo = document.getElementById('testCodigo').value.trim();
+            const nombre = document.getElementById('testNombre').value.trim();
+            const email = document.getElementById('testEmail').value.trim();
+            const password = document.getElementById('testPassword').value;
+
+            try {
+                log('Paso 1: Creando usuario en Firebase Auth...', 'info');
+                log('  Email: ' + email, 'info');
+                
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                log('✅ Usuario creado en Auth', 'success');
+                log('  UID: ' + user.uid, 'info');
+
+                log('Paso 2: Guardando datos en Firestore...', 'info');
+                const alumnoData = {
+                    codigo: codigo,
+                    nombre: nombre,
+                    email: email,
+                    rol: 'alumno',
+                    fechaRegistro: new Date().toISOString(),
+                    timestamp: Date.now()
+                };
+
+                const docRef = doc(db, 'alumnos', user.uid);
+                await setDoc(docRef, alumnoData);
+                
+                log('✅ Datos guardados en Firestore', 'success');
+
+                // Verificar
+                const savedDoc = await getDoc(docRef);
+                if (savedDoc.exists()) {
+                    log('✅ Verificación exitosa: Documento existe en Firestore', 'success');
+                    log('  Datos: ' + JSON.stringify(savedDoc.data(), null, 2), 'info');
+                    log('========================================', 'success');
+                    log('✅✅✅ REGISTRO COMPLETADO CON ÉXITO ✅✅✅', 'success');
+                    log('========================================', 'success');
+                }
+
+                alert('✅ Usuario registrado exitosamente. Revisa la consola de diagnóstico.');
+
+            } catch (error) {
+                log('❌ ERROR: ' + error.code, 'error');
+                log('  Mensaje: ' + error.message, 'error');
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    log('  Este email ya está registrado. Usa otro email.', 'error');
+                } else if (error.code === 'permission-denied') {
+                    log('  Las reglas de Firestore bloquean la escritura', 'error');
+                }
+                
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        // Auto-check on load
+        setTimeout(() => {
+            testFirebaseConnection();
+            testAuthentication();
+        }, 500);
+    </script>
+</body>
+</html>

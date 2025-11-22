@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Atención - Sistema de Consejería</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <span>Sistema de Consejería</span>
+            </div>
+            <div class="nav-menu">
+                <a href="dashboard.html" class="btn btn-outline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Volver al Panel
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>📋 Registro de Nueva Atención</h1>
+                <p>Complete todos los campos para registrar la atención de consejería o tutoría</p>
+            </div>
+
+            <form id="atencionForm" class="attention-form">
+                <!-- Información General -->
+                <fieldset>
+                    <legend>Información General</legend>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="semestre">
+                                <span class="required">*</span> Semestre:
+                            </label>
+                            <select id="semestre" name="semestre" required class="form-control">
+                                <option value="">Seleccione...</option>
+                                <option value="2025-I">2025-I</option>
+                                <option value="2025-II">2025-II</option>
+                                <option value="2024-II">2024-II</option>
+                                <option value="2024-I">2024-I</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha">
+                                <span class="required">*</span> Fecha de Atención:
+                            </label>
+                            <input type="date" id="fecha" name="fecha" required class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hora">
+                                <span class="required">*</span> Hora de Atención:
+                            </label>
+                            <input type="time" id="hora" name="hora" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="docente">
+                                <span class="required">*</span> Docente Responsable:
+                            </label>
+                            <input type="text" id="docente" name="docente" required class="form-control" 
+                                   placeholder="Nombre completo del docente">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tema">
+                                <span class="required">*</span> Tema de Consejería:
+                            </label>
+                            <select id="tema" name="tema" required class="form-control">
+                                <option value="">Seleccione un tema...</option>
+                                <option value="Plan de Estudios">Consejería en asuntos relacionados con el plan de estudios</option>
+                                <option value="Desarrollo Profesional">Consejería en asuntos relacionados con el desarrollo profesional</option>
+                                <option value="Inserción Laboral">Consejería en asuntos relacionados con la inserción laboral</option>
+                                <option value="Plan de Tesis">Asuntos Académicos del Proceso de Plan de Tesis o Tesis</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="otroTemaGroup" style="display: none;">
+                        <label for="otroTema">
+                            <span class="required">*</span> Especifique otro tema:
+                        </label>
+                        <input type="text" id="otroTema" name="otroTema" class="form-control" 
+                               placeholder="Describa el tema">
+                    </div>
+                </fieldset>
+
+                <!-- Datos del Estudiante -->
+                <fieldset>
+                    <legend>Datos del Estudiante</legend>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="codigoEstudiante">
+                                <span class="required">*</span> Código del Estudiante:
+                            </label>
+                            <input type="text" id="codigoEstudiante" name="codigoEstudiante" required 
+                                   class="form-control" placeholder="Ej: 20250001" 
+                                   pattern="[0-9]{8}" maxlength="8" title="Debe ser un código de 8 dígitos">
+                            <small class="form-help">Debe contener exactamente 8 dígitos</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="apellidosEstudiante">
+                                <span class="required">*</span> Apellidos del Estudiante:
+                            </label>
+                            <input type="text" id="apellidosEstudiante" name="apellidosEstudiante" required 
+                                   class="form-control" placeholder="Ej: García López">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombresEstudiante">
+                                <span class="required">*</span> Nombres del Estudiante:
+                            </label>
+                            <input type="text" id="nombresEstudiante" name="nombresEstudiante" required 
+                                   class="form-control" placeholder="Ej: Juan Carlos">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Descripción de la Atención -->
+                <fieldset>
+                    <legend>Descripción de la Atención</legend>
+                    
+                    <div class="form-group">
+                        <label for="consultaEstudiante">
+                            <span class="required">*</span> Consulta del Estudiante:
+                        </label>
+                        <textarea id="consultaEstudiante" name="consultaEstudiante" required 
+                                  class="form-control" rows="4" 
+                                  placeholder="Describa la consulta o motivo de la atención..."></textarea>
+                        <small class="form-help">Mínimo 20 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcionAtencion">
+                            <span class="required">*</span> Descripción de la Atención Brindada:
+                        </label>
+                        <textarea id="descripcionAtencion" name="descripcionAtencion" required 
+                                  class="form-control" rows="5" 
+                                  placeholder="Describa la orientación, consejos y acciones realizadas durante la atención..."></textarea>
+                        <small class="form-help">Mínimo 30 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="evidencia">
+                            Evidencia (Opcional):
+                        </label>
+                        <textarea id="evidencia" name="evidencia" 
+                                  class="form-control" rows="3" 
+                                  placeholder="Documentos, links, o referencias relacionadas con la atención..."></textarea>
+                        <small class="form-help">Información complementaria como documentos entregados, enlaces, etc.</small>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="btn-text">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            Registrar Atención
+                        </span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span> Guardando...
+                        </span>
+                    </button>
+                    <button type="button" id="btnCancel" class="btn btn-secondary btn-lg">
+                        Cancelar
+                    </button>
+                </div>
+
+                <div id="formMessage" class="message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/atencion.js"></script>
+</body>
+</html>
