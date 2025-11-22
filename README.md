@@ -410,6 +410,7 @@ Este proyecto es de uso educativo y puede ser modificado según las necesidades 
 
 ### Despliegue
 Para desplegar en producción:
+
 1. Configurar Firebase Hosting
 2. Cambiar las reglas de Firestore de modo prueba a producción
 3. Configurar dominio personalizado (opcional)

@@ -17,8 +17,48 @@ const temaSelect = document.getElementById('tema');
 const otroTemaGroup = document.getElementById('otroTemaGroup');
 const otroTemaInput = document.getElementById('otroTema');
 
-// Establecer la fecha actual por defecto
-document.getElementById('fecha').valueAsDate = new Date();
+// Establecer la fecha actual por defecto y configurar fecha mínima
+const fechaInput = document.getElementById('fecha');
+const horaInput = document.getElementById('hora');
+const hoy = new Date();
+const fechaHoyStr = hoy.toISOString().split('T')[0];
+
+fechaInput.valueAsDate = hoy;
+fechaInput.setAttribute('min', fechaHoyStr);
+
+// Validar fecha en tiempo real
+fechaInput.addEventListener('change', () => {
+    const fechaSeleccionada = new Date(fechaInput.value + 'T00:00:00');
+    const fechaActual = new Date(fechaHoyStr + 'T00:00:00');
+    
+    if (fechaSeleccionada < fechaActual) {
+        showMessage('No se puede seleccionar una fecha pasada.', 'error');
+        fechaInput.value = fechaHoyStr;
+    }
+});
+
+// Validar hora si es el día actual
+horaInput.addEventListener('change', validarHora);
+fechaInput.addEventListener('change', validarHora);
+
+function validarHora() {
+    const fechaSeleccionada = fechaInput.value;
+    const horaSeleccionada = horaInput.value;
+    
+    if (fechaSeleccionada === fechaHoyStr && horaSeleccionada) {
+        const horaActual = hoy.getHours();
+        const minutosActuales = hoy.getMinutes();
+        const [horaSelect, minutosSelect] = horaSeleccionada.split(':').map(Number);
+        
+        const tiempoSeleccionadoEnMinutos = horaSelect * 60 + minutosSelect;
+        const tiempoActualEnMinutos = horaActual * 60 + minutosActuales;
+        
+        if (tiempoSeleccionadoEnMinutos < tiempoActualEnMinutos) {
+            showMessage('No se puede seleccionar una hora pasada para el día de hoy.', 'error');
+            horaInput.value = '';
+        }
+    }
+}
 
 // Mostrar/ocultar campo "Otro tema"
 temaSelect.addEventListener('change', () => {
@@ -63,7 +103,7 @@ function toggleButtonLoading(button, loading) {
 
 // Validación del código de estudiante
 document.getElementById('codigoEstudiante').addEventListener('input', (e) => {
-    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 8);
+    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 10);
 });
 
 // Botón cancelar
@@ -112,9 +152,33 @@ atencionForm.addEventListener('submit', async (e) => {
         tema = `Otros: ${otroTema}`;
     }
 
+    // Validar fecha y hora
+    const fechaSeleccionada = new Date(fecha + 'T00:00:00');
+    const fechaActual = new Date(fechaHoyStr + 'T00:00:00');
+    
+    if (fechaSeleccionada < fechaActual) {
+        showMessage('La fecha de atención no puede ser anterior a hoy.', 'error');
+        return;
+    }
+    
+    // Si es el día actual, validar que la hora no sea pasada
+    if (fecha === fechaHoyStr) {
+        const horaActual = new Date().getHours();
+        const minutosActuales = new Date().getMinutes();
+        const [horaSelect, minutosSelect] = hora.split(':').map(Number);
+        
+        const tiempoSeleccionadoEnMinutos = horaSelect * 60 + minutosSelect;
+        const tiempoActualEnMinutos = horaActual * 60 + minutosActuales;
+        
+        if (tiempoSeleccionadoEnMinutos < tiempoActualEnMinutos) {
+            showMessage('La hora de atención no puede ser anterior a la hora actual.', 'error');
+            return;
+        }
+    }
+
     // Validaciones adicionales
-    if (codigoEstudiante.length !== 8) {
-        showMessage('El código del estudiante debe tener exactamente 8 dígitos.', 'error');
+    if (codigoEstudiante.length !== 10) {
+        showMessage('El código del estudiante debe tener exactamente 10 dígitos.', 'error');
         return;
     }
 
