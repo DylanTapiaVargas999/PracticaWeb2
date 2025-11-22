@@ -2,35 +2,69 @@
 
 ## 📋 Descripción
 
-Sistema web completo para el registro y gestión de atenciones de consejería y tutoría a estudiantes. Desarrollado con HTML, CSS, JavaScript y Firebase (Authentication y Firestore).
+Sistema web completo para el registro y gestión de atenciones de consejería y tutoría a estudiantes. Desarrollado con **arquitectura MVC (Modelo-Vista-Controlador)** usando HTML, CSS, JavaScript y Firebase (Authentication y Firestore).
+
+## 🏗️ Arquitectura MVC
+
+Este proyecto utiliza el patrón **MVC** para una mejor organización y mantenibilidad:
+
+```
+PracticaWeb2/
+├── config/              # Configuración de Firebase
+├── models/              # Modelos de datos (User, Estudiante, Atencion)
+├── controllers/         # Lógica de negocio (Auth, Atencion, Reportes)
+├── views/               # Interfaces HTML
+├── js/                  # Scripts de interfaz de usuario
+└── css/                 # Estilos
+```
+
+📖 **Documentación completa de MVC**: [ARQUITECTURA_MVC.md](./ARQUITECTURA_MVC.md)
+
+## 🚀 Inicio Rápido
+
+### Acceso al Sistema
+1. **Desde navegador local**: Abrir `index.html` (redirección automática a `/views/`)
+2. **URL directa**: Navegar a `views/index.html`
+
+### Páginas del Sistema
+- **`views/index.html`** - Página de bienvenida
+- **`views/login.html`** - Inicio de sesión
+- **`views/register.html`** - Registro de nuevos docentes
+- **`views/dashboard.html`** - Panel principal
+- **`views/atencion.html`** - Registro de atenciones
+- **`views/reportes.html`** - Reportes y estadísticas
 
 ## ✨ Características Principales
 
 ### 🔐 Autenticación
-- **Registro de docentes** con email y contraseña
+- **Registro de docentes** con email institucional (@virtual.upt.pe, @upt.pe)
 - **Login seguro** con Firebase Authentication
+- **Validación de dominios institucionales**
 - **Sesión persistente** entre páginas
 - **Cierre de sesión** seguro
 
 ### 📝 Registro de Atenciones
 - **Formulario completo** con validación de campos
 - **Información obligatoria:**
-  - Semestre académico
-  - Fecha y hora de atención
-  - Docente responsable
-  - Tema de consejería (5 opciones predefinidas + otros)
-  - Datos del estudiante (código de 8 dígitos, apellidos, nombres)
+  - Semestre académico (default: 2025-II)
+  - Fecha y hora de atención (solo fechas actuales o futuras)
+  - Docente responsable (automático)
+  - Tema de consejería (5 opciones predefinidas)
+  - Datos del estudiante (código de 10 dígitos, apellidos, nombres, email, teléfono)
   - Consulta del estudiante
   - Descripción de la atención brindada
 - **Campo opcional:** Evidencia (documentos, links, referencias)
-- **Validaciones en tiempo real**
+- **Validaciones en tiempo real:**
+  - No permite fechas pasadas
+  - Código de estudiante: 10 dígitos numéricos
+  - Email institucional obligatorio para docentes
 
 ### 📊 Dashboard Interactivo
 - **Estadísticas en tiempo real:**
   - Total de atenciones
-  - Semestres activos
+  - Estudiantes atendidos
   - Docentes participantes
-  - Temas diferentes atendidos
+  - Temas diferentes
 - **Filtros avanzados:**
   - Por semestre
   - Por docente
@@ -38,384 +72,385 @@ Sistema web completo para el registro y gestión de atenciones de consejería y 
 - **Tabla completa** con todas las atenciones ordenadas por fecha
 - **Modal de detalles** al hacer clic en cualquier atención
 
-### 📈 Reportes y Estadísticas
-- **Reporte por semestre** con porcentajes
-- **Reporte por docente** con porcentajes
-- **Reporte por tema** con porcentajes y gráficos visuales
+### 📈 Reportes y Estadísticas Avanzadas
+- **Reporte general** con estadísticas globales
+- **Reporte por fechas** con rango personalizado y distribución diaria
+- **Reporte por ciclo académico** con detalles completos
+- **Reporte mensual** con estadísticas y distribución por días
+- **Reporte por tipo de cita/tema** con porcentajes
+- **Reporte por semestre** con gráficos visuales
+- **Reporte por docente** con estadísticas individuales
 - **Exportación** de reportes en formato texto
 - **Impresión** optimizada para PDF
 
-### 🎨 Diseño Moderno
-- **Interfaz limpia y profesional**
-- **Responsive design** para móviles y tablets
-- **Iconos SVG** integrados
-- **Efectos visuales** suaves y transiciones
-- **Sistema de colores** consistente
-
-## 🚀 Configuración del Proyecto
-
-### Paso 1: Configurar Firebase
-
-1. **Crear un proyecto en Firebase:**
-   - Ve a [Firebase Console](https://console.firebase.google.com/)
-   - Clic en "Agregar proyecto"
-   - Ingresa un nombre (ej: "sistema-consejeria-web")
-   - Acepta los términos y crea el proyecto
-
-2. **Registrar tu aplicación web:**
-   - En el panel de Firebase, clic en el ícono web `</>`
-   - Registra tu app con un nombre
-   - **Copia las credenciales** que aparecen
-
-3. **Actualizar la configuración:**
-   - Abre el archivo `js/firebase-config.js`
-   - Reemplaza los valores con tus credenciales de Firebase:
-   ```javascript
-   export const firebaseConfig = {
-       apiKey: "TU_API_KEY",
-       authDomain: "TU_AUTH_DOMAIN",
-       projectId: "TU_PROJECT_ID",
-       storageBucket: "TU_STORAGE_BUCKET",
-       messagingSenderId: "TU_MESSAGING_SENDER_ID",
-       appId: "TU_APP_ID"
-   };
-   ```
-
-### Paso 2: Configurar Firebase Authentication
-
-1. En Firebase Console, ve a **Authentication**
-2. Clic en "Comenzar"
-3. Habilita el proveedor **"Correo electrónico/contraseña"**
-4. Guarda los cambios
-
-### Paso 3: Configurar Firestore Database
-
-1. En Firebase Console, ve a **Firestore Database**
-2. Clic en "Crear base de datos"
-3. Selecciona **"Modo de prueba"** (para desarrollo)
-4. Elige una ubicación (ej: us-central)
-
-5. **IMPORTANTE - Configurar Reglas de Seguridad:**
-   - Ve a la pestaña "Reglas"
-   - Reemplaza las reglas con:
-   ```javascript
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       // Regla para la colección de docentes
-       match /docentes/{userId} {
-         allow read, write: if request.auth != null && request.auth.uid == userId;
-         allow read: if request.auth != null;
-       }
-       
-       // Regla para la colección de atenciones
-       match /atenciones/{atencionId} {
-         allow read: if request.auth != null;
-         allow create: if request.auth != null;
-         allow update, delete: if request.auth != null && 
-                                  resource.data.registradoPor == request.auth.uid;
-       }
-     }
-   }
-   ```
-   - Clic en "Publicar"
-
-### Paso 4: Estructura de Colecciones en Firestore
-
-El sistema crea automáticamente dos colecciones:
-
-#### Colección `docentes`
-Almacena información de los docentes registrados:
-```javascript
-{
-  nombre: "Juan Pérez García",
-  codigo: "DOC20250001",
-  email: "juan.perez@universidad.edu.pe",
-  rol: "docente",
-  fechaRegistro: "2025-01-20T10:30:00.000Z",
-  timestamp: 1737368400000
-}
-```
-
-#### Colección `atenciones`
-Almacena todas las atenciones registradas:
-```javascript
-{
-  semestre: "2025-I",
-  fecha: "2025-01-20",
-  hora: "14:30",
-  docente: "juan.perez@universidad.edu.pe",
-  tema: "Plan de Estudios",
-  estudiante: {
-    codigo: "20220145",
-    apellidos: "García López",
-    nombres: "María Elena",
-    nombreCompleto: "García López María Elena"
-  },
-  consultaEstudiante: "Necesito orientación sobre los cursos electivos...",
-  descripcionAtencion: "Se le proporcionó información detallada sobre...",
-  evidencia: "Documento entregado: Plan_Estudios_2025.pdf",
-  registradoPor: "uid_del_docente",
-  registradoPorEmail: "juan.perez@universidad.edu.pe",
-  fechaRegistro: "2025-01-20T14:45:00.000Z",
-  timestamp: (serverTimestamp)
-}
-```
-
-## 📁 Estructura del Proyecto
+## 📂 Estructura del Proyecto
 
 ```
 PracticaWeb2/
-│
-├── index.html              # Página de bienvenida
-├── login.html              # Página de inicio de sesión
-├── register.html           # Página de registro
-├── dashboard.html          # Panel principal con listado
-├── atencion.html           # Formulario de nueva atención
-├── reportes.html           # Página de reportes y estadísticas
-│
-├── css/
-│   └── styles.css          # Estilos globales del sistema
-│
-├── js/
-│   ├── firebase-config.js  # Configuración de Firebase
-│   ├── login.js            # Lógica de inicio de sesión
-│   ├── register.js         # Lógica de registro
-│   ├── dashboard.js        # Lógica del panel principal
-│   ├── atencion.js         # Lógica del formulario de atención
-│   └── reportes.js         # Lógica de reportes
-│
-├── package.json            # Dependencias (Firebase)
-└── README.md               # Este archivo
+├── config/
+│   └── firebase-config.js          # Configuración de Firebase
+├── models/                          # Modelos de datos
+│   ├── User.js
+│   ├── Estudiante.js
+│   └── Atencion.js
+├── controllers/                     # Lógica de negocio
+│   ├── AuthController.js
+│   ├── AtencionController.js
+│   └── ReportesController.js
+├── views/                           # Interfaces HTML
+│   ├── index.html
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   ├── atencion.html
+│   └── reportes.html
+├── js/                              # Scripts de interfaz
+│   ├── login.js
+│   ├── register.js
+│   ├── dashboard.js
+│   ├── atencion.js
+│   └── reportes.js
+└── css/
+    └── styles.css                   # Estilos generales
 ```
 
-## 🎯 Temas de Consejería Disponibles
+# 📚 Guía de Uso - Sistema de Atenciones
 
-1. **Consejería en asuntos relacionados con el plan de estudios**
-2. **Consejería en asuntos relacionados con el desarrollo profesional**
-3. **Consejería en asuntos relacionados con la inserción laboral**
-4. **Asuntos Académicos del Proceso de Plan de Tesis o Tesis**
-5. **Otros** (con campo de texto adicional para especificar)
+## 👤 Para Docentes - Primera Vez
 
-## 🔍 Validaciones Implementadas
+### 1. Registro (Solo la Primera Vez)
 
-### Registro de Docentes
-- ✅ Nombre completo obligatorio
-- ✅ Código de docente mínimo 5 caracteres
-- ✅ Email válido
-- ✅ Contraseña mínimo 6 caracteres
-- ✅ Confirmación de contraseña debe coincidir
-- ✅ Email único (no puede estar duplicado)
+1. Abre el proyecto (accede a `index.html` en tu navegador)
+2. Clic en **"Registrarse"**
+3. Completa el formulario:
+   - **Email:** tu-email@virtual.upt.pe o tu-email@upt.pe
+   - **Contraseña:** (mínimo 6 caracteres)
+   - **Confirmar Contraseña:** (misma contraseña)
+4. Clic en **"Crear Cuenta"**
+5. Serás redirigido automáticamente al dashboard
 
-### Registro de Atenciones
-- ✅ Todos los campos obligatorios deben estar completos
-- ✅ Código de estudiante debe ser exactamente 8 dígitos
-- ✅ Consulta del estudiante mínimo 20 caracteres
-- ✅ Descripción de atención mínimo 30 caracteres
-- ✅ Fecha no puede ser futura
-- ✅ Si selecciona "Otros" en tema, debe especificar
+> **⚠️ IMPORTANTE:** Solo se permite el registro con correos institucionales que terminen en **@virtual.upt.pe** o **@upt.pe**
 
-## 📱 Funcionalidades del Dashboard
+### 2. Iniciar Sesión (Próximas Visitas)
 
-### Estadísticas en Tiempo Real
-- Contador total de atenciones
-- Número de semestres diferentes
-- Cantidad de docentes participantes
-- Total de temas atendidos
+1. Abre el proyecto (`index.html`)
+2. Clic en **"Iniciar Sesión"**
+3. Ingresa tu email institucional (@virtual.upt.pe o @upt.pe) y contraseña
+4. Clic en **"Ingresar"**
 
-### Sistema de Filtros
-- **Filtro por semestre:** Muestra solo atenciones del semestre seleccionado
-- **Filtro por docente:** Muestra solo atenciones de un docente específico
-- **Filtro por tema:** Muestra solo atenciones de un tema específico
-- **Combinación de filtros:** Los filtros se pueden aplicar simultáneamente
-- **Botón limpiar:** Restaura la vista completa
-
-### Tabla de Atenciones
-- Ordenadas por fecha (más recientes primero)
-- Información resumida: fecha, hora, semestre, estudiante, código, docente, tema
-- Click en cualquier fila para ver detalle completo
-- Responsive en dispositivos móviles
-
-### Modal de Detalle
-- Muestra toda la información de la atención
-- Dividida en secciones claras
-- Botón de cerrar (X) y click fuera del modal
-- Diseño limpio y legible
-
-## 📊 Sistema de Reportes
-
-### Reportes Disponibles
-
-1. **Resumen General:**
-   - Total de atenciones
-   - Semestres registrados
-   - Docentes activos
-   - Estudiantes únicos atendidos
-
-2. **Atenciones por Semestre:**
-   - Tabla con cantidad y porcentaje
-   - Barra de progreso visual
-   - Ordenado de mayor a menor
-
-3. **Atenciones por Docente:**
-   - Ranking de docentes
-   - Cantidad y porcentaje de atenciones
-   - Barra de progreso visual
-
-4. **Atenciones por Tema:**
-   - Distribución de temas
-   - Cantidad y porcentaje
-   - Gráfico de barras interactivo
-
-### Exportación
-- **Exportar:** Descarga un archivo .txt con todo el reporte
-- **Imprimir:** Impresión optimizada (oculta elementos de navegación)
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Frontend:**
-  - HTML5 semántico
-  - CSS3 con variables y flexbox/grid
-  - JavaScript ES6+ (módulos)
-  - Iconos SVG inline
-
-- **Backend:**
-  - Firebase Authentication (gestión de usuarios)
-  - Firebase Firestore (base de datos NoSQL)
-  - Firebase Hosting (opcional para despliegue)
-
-- **Características:**
-  - 100% responsivo
-  - Sin dependencias externas (frameworks CSS/JS)
-  - Código modular y mantenible
-  - Validaciones en cliente y servidor
-
-## 🚦 Cómo Usar el Sistema
-
-### Para Docentes (Primera Vez)
-
-1. **Registro:**
-   - Abrir `index.html` en el navegador
-   - Clic en "Registrarse"
-   - Completar todos los campos
-   - Hacer clic en "Crear Cuenta"
-
-2. **Iniciar Sesión:**
-   - En próximas visitas, clic en "Iniciar Sesión"
-   - Ingresar email y contraseña
-   - Clic en "Ingresar"
-
-### Registrar una Atención
-
-1. En el dashboard, clic en **"Nueva Atención"**
-2. Completar todos los campos obligatorios (marcados con *)
-3. Revisar que el código del estudiante tenga 8 dígitos
-4. Escribir una consulta descriptiva (mínimo 20 caracteres)
-5. Describir la atención brindada (mínimo 30 caracteres)
-6. Opcionalmente, agregar evidencia
-7. Clic en **"Registrar Atención"**
-
-### Ver Atenciones Registradas
-
-1. En el dashboard se muestran todas las atenciones
-2. Usar los filtros para buscar atenciones específicas
-3. Hacer clic en cualquier fila para ver el detalle completo
-
-### Generar Reportes
-
-1. Clic en **"Ver Reportes"** desde el dashboard
-2. Revisar las estadísticas y gráficos
-3. Usar **"Exportar Reporte"** para descargar los datos
-4. Usar **"Imprimir"** para generar un PDF
-
-## ⚠️ Solución de Problemas Comunes
-
-### Error: "permission-denied" al registrar
-
-**Causa:** Las reglas de Firestore no están configuradas correctamente.
-
-**Solución:**
-1. Ve a Firebase Console → Firestore Database → Reglas
-2. Copia y pega las reglas del Paso 3 de la configuración
-3. Clic en "Publicar"
-
-### Error: "auth/email-already-in-use"
-
-**Causa:** El email ya está registrado.
-
-**Solución:**
-- Usa otro email o inicia sesión con el existente
-
-### No aparecen las atenciones en el dashboard
-
-**Causa:** Puede ser por reglas de Firestore o falta de permisos.
-
-**Solución:**
-1. Verifica que el usuario esté autenticado (debe aparecer el email arriba)
-2. Revisa las reglas de Firestore
-3. Abre la consola del navegador (F12) y busca errores
-
-### El formulario no se envía
-
-**Causa:** Validaciones de campos no cumplidas.
-
-**Solución:**
-- Revisa que todos los campos obligatorios estén completos
-- El código del estudiante debe tener 8 dígitos
-- Las descripciones deben cumplir el mínimo de caracteres
-
-## 🔒 Seguridad
-
-- ✅ Autenticación requerida para acceder al sistema
-- ✅ Validación de datos en cliente y servidor
-- ✅ Reglas de Firestore configuradas
-- ✅ Solo el creador puede modificar/eliminar sus registros
-- ✅ Contraseñas encriptadas por Firebase
-- ✅ Sesiones seguras con tokens
-
-## 📈 Mejoras Futuras Sugeridas
-
-- [ ] Edición de atenciones registradas
-- [ ] Eliminación de atenciones con confirmación
-- [ ] Búsqueda por nombre o código de estudiante
-- [ ] Notificaciones por email al registrar atención
-- [ ] Carga de archivos (PDFs, imágenes) como evidencia
-- [ ] Exportación de reportes en Excel/PDF
-- [ ] Perfil de usuario editable
-- [ ] Roles diferenciados (admin, docente, coordinador)
-- [ ] Dashboard con gráficos más avanzados (Chart.js)
-- [ ] Historial de atenciones por estudiante
-
-## 📞 Soporte
-
-Para problemas técnicos:
-1. Revisa la consola del navegador (F12)
-2. Verifica la configuración de Firebase
-3. Consulta la documentación oficial de Firebase
-
-## 📄 Licencia
-
-Este proyecto es de uso educativo y puede ser modificado según las necesidades de la institución.
+> **⚠️ IMPORTANTE:** Solo se permite el acceso con correos institucionales que terminen en **@virtual.upt.pe** o **@upt.pe**
 
 ---
 
-**Desarrollado con ❤️ para mejorar el seguimiento académico estudiantil**
+## 📝 Registrar una Atención
 
-## 🎓 Notas de Implementación
+### Paso a Paso
 
-### Requisitos del Sistema
-- Navegador moderno (Chrome, Firefox, Edge, Safari)
-- Conexión a Internet activa
-- JavaScript habilitado
+1. **Desde el Dashboard:**
+   - Clic en el botón verde **"Nueva Atención"**
 
-### Despliegue
-Para desplegar en producción:
+2. **Información General:**
+   - **Semestre:** Por defecto aparece "2025-II" (puedes cambiarlo)
+   - **Fecha:** Selecciona la fecha (solo fechas actuales o futuras)
+   - **Hora:** Selecciona la hora de la atención (ej: 14:30)
+   - **Tema:** Selecciona uno de los 5 temas disponibles
 
-1. Configurar Firebase Hosting
-2. Cambiar las reglas de Firestore de modo prueba a producción
-3. Configurar dominio personalizado (opcional)
+3. **Datos del Estudiante:**
+   - **Código:** 10 dígitos numéricos (ej: 2021072630)
+   - **Apellidos:** García López
+   - **Nombres:** María Elena
+   - **Email:** maria.garcia@virtual.upt.pe (opcional)
+   - **Teléfono:** 987654321 (opcional)
 
-### Mantenimiento
-- Revisar periódicamente las reglas de seguridad
-- Hacer backup de la base de datos Firestore
-- Monitorear el uso de Firebase (cuotas gratuitas)
+4. **Descripción:**
+   - **Consulta del Estudiante:** 
+     ```
+     Necesito orientación sobre los cursos electivos que debo 
+     llevar el próximo semestre para cumplir con mi plan de estudios.
+     Tengo dudas sobre las equivalencias.
+     ```
+   
+   - **Atención Brindada:**
+     ```
+     Se revisó el plan de estudios del estudiante y se verificó 
+     que ha cumplido con los prerrequisitos. Se le proporcionó 
+     información detallada sobre los cursos electivos disponibles 
+     y se le recomendó inscribirse en "Desarrollo Web Avanzado" 
+     y "Inteligencia Artificial Aplicada". Se le entregó una copia 
+     del plan de estudios actualizado.
+     ```
+
+   - **Evidencia (Opcional):**
+     ```
+     Documento entregado: Plan_Estudios_2025_I.pdf
+     Link útil: https://universidad.edu.pe/planes-estudio
+     ```
+
+5. **Registrar:**
+   - Clic en **"Registrar Atención"**
+   - Espera la confirmación
+   - Serás redirigido al dashboard
+
+---
+
+## 🔍 Buscar y Filtrar Atenciones
+
+### Usar Filtros
+
+1. **Filtrar por Semestre:**
+   - En el dashboard, selecciona "2025-I" en el filtro de semestre
+   - Solo verás atenciones de ese semestre
+
+2. **Filtrar por Docente:**
+   - Selecciona un docente específico
+   - Solo verás sus atenciones
+
+3. **Filtrar por Tema:**
+   - Selecciona un tema (ej: "Plan de Estudios")
+   - Solo verás atenciones de ese tema
+
+4. **Combinar Filtros:**
+   - Puedes usar varios filtros a la vez
+   - Ejemplo: Semestre "2025-I" + Tema "Plan de Tesis"
+
+5. **Limpiar Filtros:**
+   - Clic en **"Limpiar Filtros"**
+   - Vuelve a mostrar todas las atenciones
+
+### Ver Detalles de una Atención
+
+1. En la tabla del dashboard, haz clic en cualquier fila
+2. Se abrirá un modal con toda la información:
+   - Datos generales
+   - Datos del estudiante
+   - Consulta completa
+   - Descripción de la atención
+   - Evidencia (si existe)
+   - Info de registro
+3. Clic en la X o fuera del modal para cerrar
+
+---
+
+## 📊 Generar Reportes
+
+### Acceder a Reportes
+
+1. Desde el dashboard, clic en **"Ver Reportes"**
+2. Verás 4 secciones principales:
+
+### Resumen General
+- Total de atenciones
+- Semestres registrados
+- Docentes activos
+- Estudiantes únicos
+
+### Atenciones por Semestre
+- Tabla con cantidad de atenciones
+- Porcentaje de cada semestre
+- Barra de progreso visual
+
+### Atenciones por Docente
+- Ranking de docentes
+- Cantidad de atenciones de cada uno
+- Porcentaje del total
+
+### Atenciones por Tema
+- Distribución de temas
+- Gráfico de barras horizontal
+- Porcentajes
+
+### Exportar Reporte
+
+1. Clic en **"Exportar Reporte"**
+2. Se descargará un archivo `.txt` con:
+   - Resumen general
+   - Datos por semestre
+   - Datos por docente
+   - Datos por tema
+3. Nombre del archivo: `reporte_atenciones_2025-01-20.txt`
+
+### Imprimir Reporte
+
+1. Clic en **"Imprimir"**
+2. Se abrirá el diálogo de impresión
+3. Puedes:
+   - Imprimir en papel
+   - Guardar como PDF
+   - Enviar por email
+
+---
+
+## 📋 Ejemplos de Temas de Consejería
+
+### 1. Plan de Estudios
+**Consultas típicas:**
+- "¿Qué cursos debo llevar este semestre?"
+- "¿Cuáles son los prerrequisitos de X curso?"
+- "¿Puedo adelantar cursos del siguiente ciclo?"
+
+### 2. Desarrollo Profesional
+**Consultas típicas:**
+- "¿Qué habilidades debo desarrollar para mi carrera?"
+- "¿Cómo puedo mejorar mi perfil profesional?"
+- "¿Qué certificaciones son recomendables?"
+
+### 3. Inserción Laboral
+**Consultas típicas:**
+- "¿Cómo elaboro un buen CV?"
+- "¿Dónde puedo buscar prácticas preprofesionales?"
+- "¿Qué empresas contratan recién egresados?"
+
+### 4. Plan de Tesis
+**Consultas típicas:**
+- "¿Cómo inicio mi proyecto de tesis?"
+- "¿Quién puede ser mi asesor?"
+- "¿Cuáles son los requisitos para sustentar?"
+
+### 5. Otros
+**Ejemplos:**
+- Trámites administrativos
+- Problemas académicos
+- Consultas sobre movilidad estudiantil
+- Preguntas sobre becas
+
+---
+
+## 💡 Consejos y Buenas Prácticas
+
+### Al Registrar Atenciones
+
+✅ **SÍ hacer:**
+- Registrar la atención el mismo día que se realiza
+- Ser específico en la descripción
+- Incluir acciones concretas realizadas
+- Mencionar documentos entregados en "Evidencia"
+- Verificar que el código del estudiante sea correcto
+
+❌ **NO hacer:**
+- Dejar descripciones vagas o genéricas
+- Olvidar registrar atenciones importantes
+- Copiar y pegar la misma descripción siempre
+- Dejar el campo de consulta muy corto
+
+### Ejemplos de Buenas Descripciones
+
+#### ❌ Mal ejemplo:
+```
+Consulta: El estudiante preguntó sobre tesis
+Atención: Se le explicó
+```
+
+#### ✅ Buen ejemplo:
+```
+Consulta: El estudiante necesita orientación sobre la estructura 
+del proyecto de tesis, específicamente sobre la metodología a 
+utilizar en su investigación sobre inteligencia artificial.
+
+Atención: Se revisó su propuesta inicial y se le recomendó usar 
+una metodología de investigación aplicada. Se le proporcionó el 
+formato oficial de la universidad y ejemplos de tesis anteriores. 
+Se acordó una próxima reunión en 2 semanas para revisar su avance. 
+Se le compartió bibliografía especializada.
+```
+
+### Manejo de Evidencias
+
+**Ejemplos de evidencias útiles:**
+- Links a documentos compartidos
+- Nombres de archivos entregados
+- Referencias bibliográficas recomendadas
+- Links a formularios o recursos online
+- Contactos compartidos
+
+```
+Evidencias:
+- Documento entregado: Formato_Tesis_2025.docx
+- Link compartido: https://drive.google.com/...
+- Bibliografía: García (2023) - Metodologías de Investigación
+- Próxima cita: 03/02/2025 a las 15:00
+```
+
+---
+
+## 📱 Uso en Dispositivos Móviles
+
+El sistema es completamente responsive:
+
+- ✅ Puedes registrar desde tu celular
+- ✅ La tabla se adapta a pantallas pequeñas
+- ✅ Los formularios son fáciles de completar en móvil
+- ✅ Los reportes se ven bien en tablets
+
+---
+
+## 🔐 Seguridad y Privacidad
+
+### Tu sesión es segura:
+- Solo tú puedes ver y registrar tus atenciones
+- Otros docentes no pueden editar tus registros
+- Las contraseñas están encriptadas
+- La sesión se cierra automáticamente si cierras el navegador
+
+### Cerrar Sesión:
+1. Clic en **"Cerrar Sesión"** (arriba a la derecha)
+2. Confirma que deseas cerrar sesión
+3. Serás redirigido al login
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### ¿Qué correos electrónicos puedo usar para registrarme?
+Solo se permiten correos institucionales de la Universidad Privada de Tacna:
+- ✅ Correos terminados en **@virtual.upt.pe** (Ejemplo: docente@virtual.upt.pe)
+- ✅ Correos terminados en **@upt.pe** (Ejemplo: docente@upt.pe)
+- ❌ No se aceptan correos de Gmail, Hotmail, Yahoo u otros proveedores
+
+### ¿Puedo editar una atención ya registrada?
+No, por el momento no se pueden editar atenciones. Asegúrate de revisar bien antes de guardar.
+
+### ¿Puedo eliminar una atención?
+No, para mantener el historial completo, las atenciones no se pueden eliminar.
+
+### ¿Cuántas atenciones puedo registrar?
+No hay límite. Puedes registrar todas las atenciones que necesites.
+
+### ¿Los datos se guardan automáticamente?
+No, debes hacer clic en "Registrar Atención" para guardar los datos.
+
+### ¿Puedo acceder desde cualquier computadora?
+Sí, solo necesitas tu email institucional (@virtual.upt.pe o @upt.pe) y contraseña.
+
+### ¿Qué pasa si olvido mi contraseña?
+Por ahora debes crear una nueva cuenta. En el futuro se agregará recuperación de contraseña.
+
+### ¿Puedo ver las atenciones de otros docentes?
+Sí, en el dashboard puedes ver todas las atenciones (con fines de coordinación y estadísticas).
+
+---
+
+## 📞 Soporte Técnico
+
+Si tienes problemas:
+
+1. **Error: "Solo se permite el acceso con correos institucionales"**
+   - Verifica que tu correo termine en @virtual.upt.pe o @upt.pe
+   - No uses correos personales (Gmail, Hotmail, etc.)
+
+2. **Revisa la consola del navegador:**
+   - Presiona F12
+   - Ve a la pestaña "Console"
+   - Busca mensajes de error en rojo
+
+3. **Verifica tu conexión a internet**
+
+4. **Intenta cerrar sesión y volver a ingresar**
+
+5. **Limpia la caché del navegador:**
+   - Ctrl + Shift + Delete
+   - Marca "Caché" e "Imágenes"
+   - Acepta
+
+---
+
+**¡Listo! Ya puedes usar el sistema completo** 🎉

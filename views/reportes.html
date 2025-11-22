@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes y Estadísticas - Sistema de Consejería</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <nav class="navbar">
@@ -31,6 +31,89 @@
             <div class="reports-header">
                 <h1>📊 Reportes y Estadísticas</h1>
                 <p>Análisis detallado de las atenciones de consejería y tutoría</p>
+            </div>
+
+            <!-- Filtros de Reporte -->
+            <div class="report-section">
+                <h2>Filtros de Reporte</h2>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="reportFilterTipo">Tipo de Reporte:</label>
+                        <select id="reportFilterTipo" class="form-control">
+                            <option value="general">General</option>
+                            <option value="fechas">Por Rango de Fechas</option>
+                            <option value="ciclo">Por Ciclo Académico</option>
+                            <option value="mes">Por Mes</option>
+                            <option value="tipoCita">Por Tipo de Cita</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtros de fecha -->
+                    <div id="filtroFechas" style="display: none;">
+                        <div class="form-row">
+                            <div class="filter-group">
+                                <label for="fechaInicio">Fecha Inicio:</label>
+                                <input type="date" id="fechaInicio" class="form-control">
+                            </div>
+                            <div class="filter-group">
+                                <label for="fechaFin">Fecha Fin:</label>
+                                <input type="date" id="fechaFin" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtro de ciclo -->
+                    <div id="filtroCiclo" class="filter-group" style="display: none;">
+                        <label for="cicloSelect">Ciclo Académico:</label>
+                        <select id="cicloSelect" class="form-control">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro de mes -->
+                    <div id="filtroMes" style="display: none;">
+                        <div class="form-row">
+                            <div class="filter-group">
+                                <label for="mesSelect">Mes:</label>
+                                <select id="mesSelect" class="form-control">
+                                    <option value="">Seleccione...</option>
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="anioSelect">Año:</label>
+                                <select id="anioSelect" class="form-control">
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtro de tipo de cita -->
+                    <div id="filtroTipoCita" class="filter-group" style="display: none;">
+                        <label for="tipoCitaSelect">Tipo de Cita:</label>
+                        <select id="tipoCitaSelect" class="form-control">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <button id="btnAplicarFiltro" class="btn btn-primary btn-block">Aplicar Filtro</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Resumen General -->
@@ -139,6 +222,31 @@
                 </div>
             </div>
 
+            <!-- Reporte por Fechas -->
+            <div class="report-section" id="reporteFechas" style="display: none;">
+                <h2>📅 Reporte por Rango de Fechas</h2>
+                <div id="fechasResumen"></div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Total Atenciones</th>
+                                <th>Porcentaje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportFechasTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reporte por Mes -->
+            <div class="report-section" id="reporteMes" style="display: none;">
+                <h2>📆 Reporte Mensual</h2>
+                <div id="mesResumen"></div>
+                <div class="chart-container" id="mesChartContainer"></div>
+            </div>
+
             <div class="report-actions">
                 <button id="btnExport" class="btn btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -160,6 +268,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/reportes.js"></script>
+    <script type="module" src="../js/reportes.js"></script>
 </body>
 </html>
